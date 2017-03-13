@@ -52,7 +52,7 @@ module Spree
     end
 
     def quantity
-      part_options[:count].to_i
+      part_options[:count].to_d
     end
 
     def assemblies_part
