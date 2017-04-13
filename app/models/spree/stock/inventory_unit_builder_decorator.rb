@@ -4,12 +4,12 @@ module Spree
       def units
         @order.line_items.flat_map do |line_item|
           line_item.quantity_by_variant.flat_map do |variant, quantity|
-            quantity.times.map { build_inventory_unit(variant, line_item) }
+            build_inventory_unit(variant, line_item, quantity)
           end
         end
       end
 
-      def build_inventory_unit(variant, line_item)
+      def build_inventory_unit(variant, line_item, quantity)
         @order.inventory_units.includes(
           variant: {
             product: {
@@ -22,7 +22,8 @@ module Spree
           pending: true,
           variant: variant,
           line_item: line_item,
-          order: @order
+          order: @order,
+          quantity: quantity
         )
       end
     end
