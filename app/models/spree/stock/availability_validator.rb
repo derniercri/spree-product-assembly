@@ -3,6 +3,9 @@ module Spree
     # Overridden from spree core to make it also check for assembly parts stock
     class AvailabilityValidator < ActiveModel::Validator
       def validate(line_item)
+        # do not validate quantities if :track_inventory_levels is disabled
+        return unless Spree::Config[:track_inventory_levels]
+
         line_item.quantity_by_variant.each do |variant, variant_quantity|
           inventory_units = line_item.inventory_units.where(variant: variant).count
           quantity = variant_quantity - inventory_units
