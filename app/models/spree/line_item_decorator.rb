@@ -51,15 +51,17 @@ module Spree
     end
 
     def quantity_with_part_line_items(quantity)
-      part_line_items.each_with_object({}) do |ap, hash|
-        hash[ap.variant] = ap.quantity * quantity
+      part_line_items.joins(:variant).map do |pli|
+        [pli.variant, pli.quantity * quantity]
       end
+      .to_h
     end
 
     def quantity_without_part_line_items(quantity)
-      product.assemblies_parts.each_with_object({}) do |ap, hash|
-        hash[ap.part] = ap.count * quantity
+      variant.parts_variants.joins(:part).map do |pv|
+        [pv.part, pv.count * quantity]
       end
+      .to_h
     end
   end
 end
